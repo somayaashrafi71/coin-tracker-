@@ -40,18 +40,15 @@ class CoinData {
     List <CoinModel> cryptoPrices = [];
     for (String crypto in cryptoList) {
       String coinSymbol = crypto.split('/')[0];
-      String url = '${kBaseURL}prices?apikey=${kAPIKey}&fsym=$coinSymbol&tsyms=$currency';
+      String url = 'https://rest.coinapi.io/v1/exchangerate/$coinSymbol/$currency?apikey=${kAPIKey}';
       try {
         final response = await http.get(Uri.parse(url));
-        if (response.statusCode == 200){
+        print('Response ${response.statusCode}');
+        print('Response ${response.body}');
+        if (response.statusCode == 200) {
           var decodedData = json.decode(response.body);
-          double price = decodedData[coinSymbol][currency.toLowerCase()];
-          String icon = coinSymbol;
-          String name = crypto.split('/')[1];
-          CoinModel coinModel =  CoinModel(icon: icon, name: name, price: price);
-          cryptoPrices.add(coinModel);
-        }
-        else{
+          print('Decode data = $decodedData');
+        } else {
           print('Status code: ${response.statusCode}');
         }
       }
@@ -60,7 +57,6 @@ class CoinData {
       }
     }
     return cryptoPrices;
-
   }
   //TODO: 1.2 Create an empty List of type CoinModel called cryptoPrices
   //TODO: 1.3 Use a For In loop that loops through the cryptoList
